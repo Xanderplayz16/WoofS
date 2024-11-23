@@ -858,7 +858,7 @@ Woof.prototype.Sprite = function({project = undefined, x = 0, y = 0, angle = 0, 
     } else if (style == "ROTATE LEFT RIGHT") {
       this.rotationStyle = "ROTATE LEFT RIGHT";
     } else {
-      throw TypeError("Unrecognized rotation style: " + style);
+      throw TypeError("Unrecognized rotation style: " + style + ". setRotationStyle only accepts 'ROTATE', 'NO ROTATE', and 'ROTATE LEFT RIGHT'");
     }
   };
   
@@ -1053,8 +1053,8 @@ Woof.prototype.Sprite = function({project = undefined, x = 0, y = 0, angle = 0, 
     }
   };
   this.project.ready(() => {
-    this.project._spriteCanvas.addEventListener("mousedown", this._onMouseDownHandler);
-    this.project._spriteCanvas.addEventListener("mouseup", this._onMouseUpHandler);
+  this.project._spriteCanvas.addEventListener("mousedown", this._onMouseDownHandler);
+  this.project._spriteCanvas.addEventListener("mouseup", this._onMouseUpHandler);
   });
   
   this.delete = function() {
@@ -1064,7 +1064,8 @@ Woof.prototype.Sprite = function({project = undefined, x = 0, y = 0, angle = 0, 
     this.deleted = true;
     if (this.project._sprites.includes(this)){
       this.project._sprites.splice(this.project._sprites.indexOf(this), 1);
-      this.project._spriteCanvas.removeEventListener("mousedown", this._onClickHandler);
+      this.project._spriteCanvas.removeEventListener("mousedown", this._onMouseDownHandler);
+      this.project._spriteCanvas.removeEventListener("mouseup", this._onMouseUpHandler);
     }
   };
 };
@@ -2012,7 +2013,11 @@ const getData = (url, callback) => {
   fetch(url,{mode:'cors',header:{'Access-Control-Allow-Origin':'*'}}).then(result => {
     result.json().then(data => {
       callback(data)
+    }).catch(error => {
+	console.log(error)
     })
+  }).catch(error => {
+      console.error(error)
   })
 }
 
